@@ -7,10 +7,12 @@ const t = initTRPC.create();
 const router = t.router;
 const publicProcedure = t.procedure;
 
-interface User {
-  id: string;
-  name: string;
-}
+const UserDto = z.object({
+  id: z.string(),
+  name: z.string(),
+});
+
+type User = z.infer<typeof UserDto>;
 
 const userList: User[] = [
   {
@@ -30,7 +32,7 @@ export const appRouter = router({
       return userList.find((it) => it.id === input);
     }),
   userCreate: publicProcedure
-    .input(z.object({ name: z.string() }))
+    .input(UserDto.pick({ name: true }))
     .mutation((req) => {
       const id = `${Math.random()}`;
 
