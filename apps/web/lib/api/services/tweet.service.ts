@@ -1,6 +1,7 @@
 import { Tweet, TweetModel, User, UserModel } from "../models";
 import { z } from "zod";
 import { v4 as uuid } from "uuid";
+import querystring from "node:querystring";
 
 const CreateUserDtoModel = UserModel.pick({
   name: true,
@@ -19,16 +20,34 @@ const TinyBirdEventDataModel = z.discriminatedUnion("source", [
   z.object({ source: z.literal("user"), data: UserModel }),
 ]);
 
-type TinyBirdEventData = z.infer<typeof TinyBirdEventDataModel>;
+export type TinyBirdEventData = z.infer<typeof TinyBirdEventDataModel>;
 
 export interface TweetService {
   createTweet: (dto: CreateTweetDto) => Promise<Tweet>;
   createUser: (dto: CreateUserDto) => Promise<User>;
 }
 
-class TinyBirdTwitterService implements TweetService {
-  private async sendEvent(eventData: TinyBirdEventData) {
+export class TinyBirdTwitterService implements TweetService {
+  private baseUrl: string;
+
+  constructor() {
+    this.baseUrl = process.env.TINYBIRD_BASE_URL;
+  }
+
+  async sendEvent(eventData: TinyBirdEventData) {
     console.log("Sending event to TinyBird", eventData);
+    await fetch(
+      this.baseUrl +
+        "/events?" +
+        querystring.stringify({
+          name: eventData.source,
+        }),
+      {
+        method: "POST",
+        body: JSON.stringify(eventData),
+      }
+    );
+    return eventData;
   }
 
   async createTweet(dto: CreateTweetDto) {
