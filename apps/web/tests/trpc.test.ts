@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { appRouter } from "./server";
+import { appRouter } from "../lib/trpc/server";
 
 describe("trpc client", async () => {
   const caller = appRouter.createCaller({});
@@ -11,7 +11,9 @@ describe("trpc client", async () => {
     expect(res).toEqual({
       id: "1",
       text: "Hello world",
-      authorId: "1",
+      user: {
+        id: "1",
+      },
       createdAt: expect.any(Date),
       updatedAt: expect.any(Date),
     });
@@ -22,7 +24,9 @@ describe("trpc client", async () => {
     expect(res).toEqual({
       id: "1",
       text: "Hello world",
-      authorId: "1",
+      user: {
+        id: "1",
+      },
       createdAt: expect.any(Date),
       updatedAt: expect.any(Date),
     });

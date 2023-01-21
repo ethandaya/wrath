@@ -1,32 +1,34 @@
 import { z } from "zod";
-import { Tweet, TweetModel } from "../models";
+import { Tweet, User } from "../models";
 import { publicProcedure } from "../base";
 
 export const methods = {
   tweetById: publicProcedure.input(z.string()).query((req) => {
-    const tweet: Tweet = {
+    const tweet = {
       id: req.input,
       text: "Hello world",
-      authorId: "1",
+      user: { id: "1" } as User,
       createdAt: new Date(),
       updatedAt: new Date(),
-    };
+    } as Tweet;
     return tweet;
   }),
   addTweet: publicProcedure
     .input(
-      TweetModel.pick({
-        text: true,
+      z.object({
+        text: z.string(),
       })
     )
     .mutation((req) => {
-      const tweet: Tweet = {
+      const tweet = {
         id: "1",
         text: req.input.text,
-        authorId: "1",
+        user: {
+          id: "1",
+        } as User,
         createdAt: new Date(),
         updatedAt: new Date(),
-      };
+      } as Tweet;
       return tweet;
     }),
 };
