@@ -1,5 +1,7 @@
 import {
   CreateAnyTweetDto,
+  CreateAnyTweetParamSchema,
+  CreateAnyTweetSchema,
   CreateRetweetSchema,
   CreateTweetSchema,
   UserModel,
@@ -12,24 +14,11 @@ const CreateUserDtoModel = UserModel.pick({
   name: true,
 });
 
-export const CreateAnyTweetParamSchema = z.discriminatedUnion("type", [
-  CreateRetweetSchema.omit({
-    id: true,
-    createdAt: true,
-    updatedAt: true,
-  }),
-  CreateTweetSchema.omit({
-    id: true,
-    createdAt: true,
-    updatedAt: true,
-  }),
-]);
-
 type CreateUserDto = z.infer<typeof CreateUserDtoModel>;
 type CreateAnyTweetParam = z.infer<typeof CreateAnyTweetParamSchema>;
 
 const TinyBirdEventDataModel = z.discriminatedUnion("source", [
-  z.object({ source: z.literal("tweet"), data: CreateTweetSchema }),
+  z.object({ source: z.literal("tweet"), data: CreateAnyTweetSchema }),
   z.object({ source: z.literal("user"), data: UserModel }),
 ]);
 

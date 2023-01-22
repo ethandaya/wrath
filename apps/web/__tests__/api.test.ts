@@ -49,4 +49,44 @@ describe("api", () => {
       updatedAt: expect.any(Date),
     });
   });
+
+  it("should be able to create a quote tweet", async () => {
+    const tweet = await caller.addTweet({
+      type: "tweet",
+      text: "Hello world",
+    });
+    const quoteTweet = await caller.addTweet({
+      type: "quote",
+      quotedStatusId: tweet.id,
+      text: tweet.text,
+    });
+    expect(quoteTweet).toEqual({
+      id: expect.any(String),
+      text: "Hello world",
+      type: "quote",
+      quotedStatusId: tweet.id,
+      createdAt: expect.any(Date),
+      updatedAt: expect.any(Date),
+    });
+  });
+
+  it("should be able to create a reply tweet", async () => {
+    const tweet = await caller.addTweet({
+      type: "tweet",
+      text: "Hello world",
+    });
+    const replyTweet = await caller.addTweet({
+      type: "reply",
+      inReplyToStatusId: tweet.id,
+      text: tweet.text,
+    });
+    expect(replyTweet).toEqual({
+      id: expect.any(String),
+      text: "Hello world",
+      type: "reply",
+      inReplyToStatusId: tweet.id,
+      createdAt: expect.any(Date),
+      updatedAt: expect.any(Date),
+    });
+  });
 });

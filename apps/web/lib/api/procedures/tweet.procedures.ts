@@ -1,9 +1,7 @@
 import { z } from "zod";
 import { publicProcedure } from "../base";
-import {
-  CreateAnyTweetParamSchema,
-  tweetService,
-} from "../services/tweet.service";
+import { tweetService } from "../services/tweet.service";
+import { CreateAnyTweetParamSchema } from "../models";
 
 export const methods = {
   tweetById: publicProcedure.input(z.string()).query((req) => {
