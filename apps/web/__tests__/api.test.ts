@@ -20,11 +20,13 @@ describe("api", () => {
     const res = await caller.addTweet({
       type: "tweet",
       text: "Hello world",
+      userId: "1",
     });
     expect(res).toEqual({
       id: expect.any(String),
       text: "Hello world",
       type: "tweet",
+      userId: "1",
       createdAt: expect.any(Date),
       updatedAt: expect.any(Date),
     });
@@ -34,16 +36,19 @@ describe("api", () => {
     const tweet = await caller.addTweet({
       type: "tweet",
       text: "Hello world",
+      userId: "1",
     });
     const retweet = await caller.addTweet({
       type: "retweet",
       retweetedStatusId: tweet.id,
       text: tweet.text,
+      userId: tweet.userId,
     });
     expect(retweet).toEqual({
       id: expect.any(String),
       text: "Hello world",
       type: "retweet",
+      userId: "1",
       retweetedStatusId: tweet.id,
       createdAt: expect.any(Date),
       updatedAt: expect.any(Date),
@@ -54,16 +59,19 @@ describe("api", () => {
     const tweet = await caller.addTweet({
       type: "tweet",
       text: "Hello world",
+      userId: "1",
     });
     const quoteTweet = await caller.addTweet({
       type: "quote",
       quotedStatusId: tweet.id,
       text: tweet.text,
+      userId: tweet.userId,
     });
     expect(quoteTweet).toEqual({
       id: expect.any(String),
       text: "Hello world",
       type: "quote",
+      userId: "1",
       quotedStatusId: tweet.id,
       createdAt: expect.any(Date),
       updatedAt: expect.any(Date),
@@ -74,17 +82,22 @@ describe("api", () => {
     const tweet = await caller.addTweet({
       type: "tweet",
       text: "Hello world",
+      userId: "1",
     });
     const replyTweet = await caller.addTweet({
       type: "reply",
       inReplyToStatusId: tweet.id,
+      inReplyToUserId: tweet.userId,
       text: tweet.text,
+      userId: "2",
     });
     expect(replyTweet).toEqual({
       id: expect.any(String),
       text: "Hello world",
       type: "reply",
+      userId: "2",
       inReplyToStatusId: tweet.id,
+      inReplyToUserId: tweet.userId,
       createdAt: expect.any(Date),
       updatedAt: expect.any(Date),
     });

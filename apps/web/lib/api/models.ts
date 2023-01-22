@@ -16,6 +16,7 @@ export type User = z.infer<typeof UserModel>;
 export const CreateTweetSchema = BaseModel.extend({
   type: z.literal("tweet"),
   text: z.string().optional(),
+  userId: z.string(),
 });
 
 export const CreateRetweetSchema = CreateTweetSchema.extend({
@@ -31,6 +32,7 @@ export const CreateQuoteTweetSchema = CreateTweetSchema.extend({
 export const CreateReplyTweetSchema = CreateTweetSchema.extend({
   type: z.literal("reply"),
   inReplyToStatusId: z.string(),
+  inReplyToUserId: z.string(),
 });
 
 export const CreateAnyTweetSchema = z.discriminatedUnion("type", [
@@ -64,3 +66,11 @@ export const CreateAnyTweetParamSchema = z.discriminatedUnion("type", [
 ]);
 
 export type CreateAnyTweetDto = z.infer<typeof CreateAnyTweetSchema>;
+
+export const ReplyModel = CreateReplyTweetSchema.extend({
+  inReplyToStatus: z.union([CreateTweetSchema, CreateRetweetSchema]),
+});
+
+export const RetweetModel = CreateRetweetSchema.extend({
+  retweetedStatus: CreateTweetSchema,
+});
