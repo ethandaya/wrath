@@ -1,4 +1,4 @@
-import { Tweet, TweetModel, User, UserModel } from "../models";
+import { CreateTweetSchema, CreateAnyTweetDto, UserModel } from "../models";
 import { z } from "zod";
 import { v4 as uuid } from "uuid";
 import querystring from "node:querystring";
@@ -7,27 +7,23 @@ const CreateUserDtoModel = UserModel.pick({
   name: true,
 });
 
-type CreateUserDto = z.infer<typeof CreateUserDtoModel>;
-
-const CreateTweetDtoModel = TweetModel.pick({
-  text: true,
+const CreateAnyTweetParamSchema = CreateTweetSchema.omit({
+  id: true,
+  updatedAt: true,
+  createdAt: true,
 });
 
-type CreateTweetDto = z.infer<typeof CreateTweetDtoModel>;
+type CreateUserDto = z.infer<typeof CreateUserDtoModel>;
+type CreateAnyTweetParam = z.infer<typeof CreateAnyTweetParamSchema>;
 
 const TinyBirdEventDataModel = z.discriminatedUnion("source", [
-  z.object({ source: z.literal("tweet"), data: TweetModel }),
+  z.object({ source: z.literal("tweet"), data: CreateTweetSchema }),
   z.object({ source: z.literal("user"), data: UserModel }),
 ]);
 
 export type TinyBirdEventData = z.infer<typeof TinyBirdEventDataModel>;
 
-export interface TweetService {
-  createTweet: (dto: CreateTweetDto) => Promise<Tweet>;
-  createUser: (dto: CreateUserDto) => Promise<User>;
-}
-
-export class TinyBirdTwitterService implements TweetService {
+export class TinyBirdTwitterService {
   private baseUrl: string;
 
   constructor() {
@@ -75,10 +71,10 @@ export class TinyBirdTwitterService implements TweetService {
     return resp.data[0];
   }
 
-  async createTweet(dto: CreateTweetDto) {
-    const tweet: Tweet = {
+  async createTweet(dto: CreateAnyTweetParam) {
+    const tweet: CreateAnyTweetDto = {
       id: uuid(),
-      text: dto.text,
+      ...dto,
       createdAt: new Date(),
       updatedAt: new Date(),
     };

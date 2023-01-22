@@ -15,4 +15,7 @@ export const methods = {
       text: req.input.text,
     });
   }),
+  retweetTweet: publicProcedure.input(z.string()).mutation(async (req) => {
+    return tweetService.retweetTweet(req.input);
+  }),
 };

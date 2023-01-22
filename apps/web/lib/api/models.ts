@@ -13,8 +13,20 @@ export const UserModel = BaseModel.extend({
 
 export type User = z.infer<typeof UserModel>;
 
-export const TweetModel = BaseModel.extend({
-  text: z.string(),
+export const CreateTweetSchema = BaseModel.extend({
+  type: z.literal("tweet"),
+  text: z.string().optional(),
 });
 
-export type Tweet = z.infer<typeof TweetModel>;
+export const CreateRetweetSchema = CreateTweetSchema.extend({
+  type: z.literal("retweet"),
+  isRetweet: z.boolean(),
+  retweetedStatusId: z.string(),
+});
+
+export const CreateAnyTweetSchema = z.discriminatedUnion("type", [
+  CreateRetweetSchema,
+  CreateTweetSchema,
+]);
+
+export type CreateAnyTweetDto = z.infer<typeof CreateAnyTweetSchema>;
