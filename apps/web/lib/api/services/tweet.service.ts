@@ -35,19 +35,44 @@ export class TinyBirdTwitterService implements TweetService {
   }
 
   async sendEvent(eventData: TinyBirdEventData) {
-    console.log("Sending event to TinyBird", eventData);
-    await fetch(
+    const URL =
       this.baseUrl +
-        "/events?" +
-        querystring.stringify({
-          name: eventData.source,
-        }),
-      {
-        method: "POST",
-        body: JSON.stringify(eventData),
-      }
-    );
+      "/events?" +
+      querystring.stringify({
+        name: eventData.source,
+      });
+    const response = await fetch(URL, {
+      method: "POST",
+      body: JSON.stringify(eventData.data),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.TINYBIRD_API_KEY}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error(
+        `Failed to send event to TinyBird: ${response.status} ${response.statusText}`
+      );
+    }
     return eventData;
+  }
+
+  async getTweet(id: string) {
+    const URL =
+      this.baseUrl +
+      "/pipes/tweets_by_id.json?" +
+      querystring.stringify({
+        token: process.env.TINYBIRD_API_KEY,
+        id,
+      });
+    const response = await fetch(URL);
+    if (!response.ok) {
+      throw new Error(
+        `Failed to get tweet from TinyBird: ${response.status} ${response.statusText}`
+      );
+    }
+    const resp = await response.json();
+    return resp.data[0];
   }
 
   async createTweet(dto: CreateTweetDto) {
