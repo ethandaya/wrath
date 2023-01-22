@@ -1,0 +1,14 @@
+VERSION 2
+
+DESCRIPTION >
+    Main Tweet Storage Table
+
+SCHEMA >
+    `id` String `json:$.id`,
+    `text` String `json:$.text`,
+    `isRetweet` UInt8 `json:$.isRetweet`,
+    `retweetedStatusId` String `json:$.retweetedStatusId`,
+    `createdAt` DateTime64(3) `json:$.createdAt`,
+    `updatedAt` DateTime64(3) `json:$.updatedAt`
+
+ENGINE "MergeTree"

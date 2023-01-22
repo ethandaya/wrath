@@ -20,7 +20,6 @@ export const CreateTweetSchema = BaseModel.extend({
 
 export const CreateRetweetSchema = CreateTweetSchema.extend({
   type: z.literal("retweet"),
-  isRetweet: z.boolean(),
   retweetedStatusId: z.string(),
 });
 

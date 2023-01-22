@@ -1,4 +1,9 @@
-import { CreateTweetSchema, CreateAnyTweetDto, UserModel } from "../models";
+import {
+  CreateAnyTweetDto,
+  CreateRetweetSchema,
+  CreateTweetSchema,
+  UserModel,
+} from "../models";
 import { z } from "zod";
 import { v4 as uuid } from "uuid";
 import querystring from "node:querystring";
@@ -7,11 +12,18 @@ const CreateUserDtoModel = UserModel.pick({
   name: true,
 });
 
-const CreateAnyTweetParamSchema = CreateTweetSchema.omit({
-  id: true,
-  updatedAt: true,
-  createdAt: true,
-});
+export const CreateAnyTweetParamSchema = z.discriminatedUnion("type", [
+  CreateRetweetSchema.omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+  }),
+  CreateTweetSchema.omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+  }),
+]);
 
 type CreateUserDto = z.infer<typeof CreateUserDtoModel>;
 type CreateAnyTweetParam = z.infer<typeof CreateAnyTweetParamSchema>;
