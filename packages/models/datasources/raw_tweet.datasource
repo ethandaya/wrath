@@ -1,0 +1,17 @@
+VERSION 0
+
+DESCRIPTION >
+    Raw Tweet Storage Table
+
+SCHEMA >
+    `id` String `json:$.id`,
+    `type` Enum('tweet' = 1, 'retweet' = 2, 'reply' = 3, 'quote' = 4) `json:$.type`,
+    `text` String `json:$.text`,
+    `userId` String `json:$.userId`,
+    `retweetedStatusId` String `json:$.retweetedStatusId`,
+    `quotedStatusId` String `json:$.quotedStatusId`,
+    `inReplyToStatusId` String `json:$.inReplyToStatusId`,
+    `inReplyToUserId` String `json:$.inReplyToUserId`,
+    `createdAt` DateTime64(3) `json:$.createdAt`,
+    `updatedAt` DateTime64(3) `json:$.updatedAt`
+    `deletedAt` DateTime64(3) `json:$.deletedAt`,

@@ -1,4 +1,4 @@
-import { Tweet } from "../../../lib/api/models";
+import { Tweet } from "../../api/models";
 
 const tweet: Tweet = {
   id: "tweet",
