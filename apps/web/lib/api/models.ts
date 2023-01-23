@@ -67,10 +67,21 @@ export const CreateAnyTweetParamSchema = z.discriminatedUnion("type", [
 
 export type CreateAnyTweetDto = z.infer<typeof CreateAnyTweetSchema>;
 
-export const ReplyModel = CreateReplyTweetSchema.extend({
-  inReplyToStatus: z.union([CreateTweetSchema, CreateRetweetSchema]),
+export const TweetModel = CreateTweetSchema.extend({
+  user: UserModel,
 });
 
 export const RetweetModel = CreateRetweetSchema.extend({
-  retweetedStatus: CreateTweetSchema,
+  user: UserModel,
+  retweetedStatus: TweetModel,
+});
+
+export const QuoteTweetModel = CreateQuoteTweetSchema.extend({
+  user: UserModel,
+  quotedStatus: TweetModel,
+});
+
+export const ReplyTweetModel = CreateReplyTweetSchema.extend({
+  user: UserModel,
+  inReplyToStatus: TweetModel,
 });
