@@ -42,27 +42,21 @@ export const CreateAnyTweetSchema = z.discriminatedUnion("type", [
   CreateTweetSchema,
 ]);
 
+type CrudKeys = "id" | "createdAt" | "updatedAt" | "deletedAt";
+const CrudFields: {
+  [key in CrudKeys]: true;
+} = {
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  deletedAt: true,
+};
+
 export const CreateAnyTweetParamSchema = z.discriminatedUnion("type", [
-  CreateRetweetSchema.omit({
-    id: true,
-    createdAt: true,
-    updatedAt: true,
-  }),
-  CreateTweetSchema.omit({
-    id: true,
-    createdAt: true,
-    updatedAt: true,
-  }),
-  CreateQuoteTweetSchema.omit({
-    id: true,
-    createdAt: true,
-    updatedAt: true,
-  }),
-  CreateReplyTweetSchema.omit({
-    id: true,
-    createdAt: true,
-    updatedAt: true,
-  }),
+  CreateRetweetSchema.omit(CrudFields),
+  CreateTweetSchema.omit(CrudFields),
+  CreateQuoteTweetSchema.omit(CrudFields),
+  CreateReplyTweetSchema.omit(CrudFields),
 ]);
 
 export type CreateAnyTweetDto = z.infer<typeof CreateAnyTweetSchema>;

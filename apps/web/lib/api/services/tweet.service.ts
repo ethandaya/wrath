@@ -2,23 +2,26 @@ import {
   CreateAnyTweetDto,
   CreateAnyTweetParamSchema,
   CreateAnyTweetSchema,
-  CreateRetweetSchema,
-  CreateTweetSchema,
   UserModel,
 } from "../models";
 import { z } from "zod";
 import { v4 as uuid } from "uuid";
 import querystring from "node:querystring";
 
+const TWEET_TABLE_NAME =
+  "raw_tweet__" + process.env.TINYBIRD_TWEET_TABLE_VERSION;
+
 const CreateUserDtoModel = UserModel.pick({
   name: true,
 });
 
 type CreateUserDto = z.infer<typeof CreateUserDtoModel>;
-type CreateAnyTweetParam = z.infer<typeof CreateAnyTweetParamSchema>;
+
+const CreateTweetParams = CreateAnyTweetParamSchema;
+type CreateTweetParams = z.infer<typeof CreateTweetParams>;
 
 const TinyBirdEventDataModel = z.discriminatedUnion("source", [
-  z.object({ source: z.literal("tweet"), data: CreateAnyTweetSchema }),
+  z.object({ source: z.literal(TWEET_TABLE_NAME), data: CreateAnyTweetSchema }),
   z.object({ source: z.literal("user"), data: UserModel }),
 ]);
 
@@ -54,25 +57,7 @@ export class TinyBirdTwitterService {
     return eventData;
   }
 
-  async getTweet(id: string) {
-    const URL =
-      this.baseUrl +
-      "/pipes/tweets_by_id.json?" +
-      querystring.stringify({
-        token: process.env.TINYBIRD_API_KEY,
-        id,
-      });
-    const response = await fetch(URL);
-    if (!response.ok) {
-      throw new Error(
-        `Failed to get tweet from TinyBird: ${response.status} ${response.statusText}`
-      );
-    }
-    const resp = await response.json();
-    return resp.data[0];
-  }
-
-  async createTweet(dto: CreateAnyTweetParam) {
+  async createTweet(dto: CreateTweetParams) {
     const tweet: CreateAnyTweetDto = {
       id: uuid(),
       ...dto,
@@ -80,11 +65,29 @@ export class TinyBirdTwitterService {
       updatedAt: new Date(),
     };
     await this.sendEvent({
-      source: "tweet",
+      source: TWEET_TABLE_NAME,
       data: tweet,
     });
     return tweet;
   }
+
+  // async getTweet(id: string) {
+  //   const URL =
+  //     this.baseUrl +
+  //     "/pipes/tweets_by_id.json?" +
+  //     querystring.stringify({
+  //       token: process.env.TINYBIRD_API_KEY,
+  //       id,
+  //     });
+  //   const response = await fetch(URL);
+  //   if (!response.ok) {
+  //     throw new Error(
+  //       `Failed to get tweet from TinyBird: ${response.status} ${response.statusText}`
+  //     );
+  //   }
+  //   const resp = await response.json();
+  //   return resp.data[0];
+  // }
 
   async createUser(dto: CreateUserDto) {
     const user = {

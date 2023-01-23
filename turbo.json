@@ -7,7 +7,7 @@
     },
     "web#build": {
       "dependsOn": ["^build"],
-      "env": ["TINYBIRD_BASE_URL", "TINYBIRD_API_KEY"],
+      "env": ["TINYBIRD_BASE_URL", "TINYBIRD_API_KEY", "TINYBIRD_TWEET_TABLE_VERSION"],
       "outputs": ["dist/**", ".next/**"]
     },
     "lint": {
