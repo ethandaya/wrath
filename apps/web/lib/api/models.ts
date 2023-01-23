@@ -67,21 +67,40 @@ export const CreateAnyTweetParamSchema = z.discriminatedUnion("type", [
 
 export type CreateAnyTweetDto = z.infer<typeof CreateAnyTweetSchema>;
 
-export const TweetModel = CreateTweetSchema.extend({
-  user: UserModel,
-});
+type TweetSchema = Omit<z.infer<typeof CreateTweetSchema>, "userId"> & {
+  type: "tweet";
+  user: Omit<User, "createdAt" | "updatedAt">;
+};
 
-export const RetweetModel = CreateRetweetSchema.extend({
-  user: UserModel,
-  retweetedStatus: TweetModel,
-});
+export type RetweetSchema = Omit<
+  z.infer<typeof CreateRetweetSchema>,
+  "userId"
+> & {
+  type: "retweet";
+  retweetedStatus: TweetSchema | ReplyTweetSchema | QuoteTweetSchema;
+  user: Omit<User, "createdAt" | "updatedAt">;
+};
 
-export const QuoteTweetModel = CreateQuoteTweetSchema.extend({
-  user: UserModel,
-  quotedStatus: TweetModel,
-});
+export type ReplyTweetSchema = Omit<
+  z.infer<typeof CreateReplyTweetSchema>,
+  "userId"
+> & {
+  type: "reply";
+  inReplyToStatus: TweetSchema | ReplyTweetSchema | QuoteTweetSchema;
+  user: Omit<User, "createdAt" | "updatedAt">;
+};
 
-export const ReplyTweetModel = CreateReplyTweetSchema.extend({
-  user: UserModel,
-  inReplyToStatus: TweetModel,
-});
+export type QuoteTweetSchema = Omit<
+  z.infer<typeof CreateQuoteTweetSchema>,
+  "userId"
+> & {
+  type: "quote";
+  quotedStatus: TweetSchema | ReplyTweetSchema | QuoteTweetSchema;
+  user: Omit<User, "createdAt" | "updatedAt">;
+};
+
+export type Tweet =
+  | TweetSchema
+  | RetweetSchema
+  | ReplyTweetSchema
+  | QuoteTweetSchema;

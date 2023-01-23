@@ -1,11 +1,11 @@
-import { appRouter } from "../lib/api/server";
+import { appRouter } from "../../lib/api/server";
 import { beforeAll, describe, expect, it, jest } from "@jest/globals";
 import {
   TinyBirdEventData,
   tweetService,
-} from "../lib/api/services/tweet.service";
+} from "../../lib/api/services/tweet.service";
 
-describe("tweet", () => {
+describe("create tweet", () => {
   let caller = appRouter.createCaller({});
 
   beforeAll(() => {
