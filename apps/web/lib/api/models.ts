@@ -80,7 +80,7 @@ export type ReplyTweetSchema = Omit<
   "userId"
 > & {
   type: "reply";
-  inReplyToStatus: TweetSchema | ReplyTweetSchema | QuoteTweetSchema;
+  repliedToStatus: TweetSchema | ReplyTweetSchema | QuoteTweetSchema;
   user: Omit<User, "createdAt" | "updatedAt">;
 };
 

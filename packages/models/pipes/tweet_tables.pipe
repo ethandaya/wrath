@@ -1,0 +1,93 @@
+VERSION 0
+
+NODE raw_tweets
+SQL >
+
+    SELECT * FROM raw_tweet
+
+
+
+NODE tweets
+SQL >
+
+    SELECT *
+    FROM raw_tweets
+    WHERE
+        retweetedStatusId IS NULL
+        AND quotedStatusId IS NULL
+        AND inReplyToStatusId IS NULL
+
+
+
+NODE retweets
+SQL >
+
+    SELECT *
+    FROM raw_tweets
+    INNER JOIN
+        (
+            SELECT *
+            FROM raw_tweets
+            WHERE id IN (SELECT retweetedStatusId FROM raw_tweets)
+        ) AS retweetedStatus
+        on raw_tweets.retweetedStatusId = retweetedStatus.id
+
+
+
+NODE quotes
+SQL >
+
+    SELECT *
+    FROM raw_tweets
+    INNER JOIN
+        (
+            SELECT *
+            FROM raw_tweets
+            WHERE id IN (SELECT quotedStatusId FROM raw_tweets)
+        ) AS quotedStatus
+        on raw_tweets.quotedStatusId = quotedStatus.id
+
+
+
+NODE replies
+SQL >
+
+    SELECT *
+    FROM raw_tweets
+    INNER JOIN
+        (
+            SELECT *
+            FROM raw_tweets
+            WHERE id IN (SELECT quotedStatusId FROM raw_tweets)
+        ) AS repliedToStatus
+        on raw_tweets.inReplyToStatusId = repliedToStatus.id
+
+
+NODE timeline
+SQL >
+    SELECT *, *, *, *
+    FROM raw_tweets
+    FULL OUTER JOIN
+        (
+            SELECT *
+            FROM raw_tweets
+            WHERE id IN (SELECT retweetedStatusId FROM raw_tweets)
+        ) AS retweetedStatus
+        on raw_tweets.retweetedStatusId = retweetedStatus.id
+    FULL OUTER JOIN
+        (
+            SELECT *
+            FROM raw_tweets
+            WHERE id IN (SELECT quotedStatusId FROM raw_tweets)
+        ) AS quotedStatus
+        on raw_tweets.quotedStatusId = quotedStatus.id
+    FULL OUTER JOIN
+        (
+            SELECT *
+            FROM raw_tweets
+            WHERE id IN (SELECT inReplyToStatusId FROM raw_tweets)
+        ) AS repliedToStatus
+        on raw_tweets.inReplyToStatusId = repliedToStatus.id
+
+TYPE materialized
+DATASOURCE timeline_mv__v2

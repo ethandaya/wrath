@@ -1,0 +1,53 @@
+VERSION 2
+
+DESCRIPTION >
+    Timeline Table
+
+SCHEMA >
+    `tweet.type` String,
+    `tweet.text` String,
+    `tweet.userId` String,
+    `tweet.retweetedStatusId` String,
+    `tweet.quotedStatusId` String,
+    `tweet.inReplyToStatusId` String,
+    `tweet.inReplyToUserId` String,
+    `tweet.createdAt` Date,
+    `tweet.updatedAt` Date,
+    `tweet.deletedAt` Date,
+    `retweetedStatus.id` String,
+    `retweetedStatus.type` String,
+    `retweetedStatus.text` String,
+    `retweetedStatus.userId` String,
+    `retweetedStatus.retweetedStatusId` String,
+    `retweetedStatus.quotedStatusId` String,
+    `retweetedStatus.inReplyToStatusId` String,
+    `retweetedStatus.inReplyToUserId` String,
+    `retweetedStatus.createdAt` Date,
+    `retweetedStatus.updatedAt` Date,
+    `retweetedStatus.deletedAt` Date,
+    `quotedStatus.id` String,
+    `quotedStatus.type` String,
+    `quotedStatus.text` String,
+    `quotedStatus.userId` String,
+    `quotedStatus.retweetedStatusId` String,
+    `quotedStatus.quotedStatusId` String,
+    `quotedStatus.inReplyToStatusId` String,
+    `quotedStatus.inReplyToUserId` String,
+    `quotedStatus.createdAt` Date,
+    `quotedStatus.updatedAt` Date,
+    `quotedStatus.deletedAt` Date,
+    `repliedToStatus.id` String,
+    `repliedToStatus.type` String,
+    `repliedToStatus.text` String,
+    `repliedToStatus.userId` String,
+    `repliedToStatus.retweetedStatusId` String,
+    `repliedToStatus.quotedStatusId` String,
+    `repliedToStatus.inReplyToStatusId` String,
+    `repliedToStatus.inReplyToUserId` String,
+    `repliedToStatus.createdAt` Date,
+    `repliedToStatus.updatedAt` Date,
+    `repliedToStatus.deletedAt` Date
+
+ENGINE "AggregatingMergeTree"
+ENGINE_PARTITION_KEY "toYYYYMM(tweet.createdAt)"
+ENGINE_SORTING_KEY "tweet.createdAt"

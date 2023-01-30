@@ -34,7 +34,7 @@ const reply: Tweet = {
     id: "1",
     name: "John Doe",
   },
-  inReplyToStatus: tweet,
+  repliedToStatus: tweet,
   inReplyToStatusId: tweet.id,
   inReplyToUserId: tweet.user.id,
   createdAt: new Date(),

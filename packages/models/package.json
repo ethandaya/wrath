@@ -5,6 +5,7 @@
   "scripts": {
     "init": "tb init",
     "auth": "tb auth",
-    "push": "tb push"
+    "push": "tb push",
+    "pull": "tb pull"
   }
 }
